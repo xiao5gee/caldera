@@ -25,3 +25,6 @@
 [submodule "plugins/atomic"]
 	path = plugins/atomic
 	url = https://github.com/mitre/atomic.git
+[submodule "plugins/human"]
+	path = plugins/human
+	url = https://github.com/mitre/human.git
