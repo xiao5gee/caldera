@@ -235,6 +235,7 @@ class RestService(BaseService):
         group = data.pop('group', '')
         planner = await self.get_service('data_svc').locate('planners', match=dict(name=data.pop('planner', 'sequential')))
         adversary = await self._construct_adversary_for_op(data.pop('adversary_id', ''))
+        await self._apply_global_cleanup_abilities(adversary)
         agents = await self.construct_agents_for_group(group)
         sources = await self.get_service('data_svc').locate('sources', match=dict(name=data.pop('source', 'basic')))
         allowed = self.Access.BLUE if self.Access.BLUE in access['access'] else self.Access.RED
@@ -285,7 +286,12 @@ class RestService(BaseService):
         adv = await self.get_service('data_svc').locate('adversaries', match=dict(adversary_id=adversary_id))
         if adv:
             return copy.deepcopy(adv[0])
-        return Adversary(adversary_id=0, name='ad-hoc', description='an empty adversary profile', phases={1: []})
+        return Adversary(adversary_id='0', name='ad-hoc', description='an empty adversary profile', phases={1: []})
+
+    async def _apply_global_cleanup_abilities(self, adversary):
+        for cleanup in [ability for i in self.get_config(name='agents', prop='cleanup_abilities')
+                        for ability in await self.get_service('data_svc').locate('abilities', dict(ability_id=i))]:
+            adversary.add_ability(phase=1, ability=cleanup)
 
     async def _update_global_props(self, sleep_min, sleep_max, watchdog, untrusted, implant_name, bootstrap_abilities):
         if implant_name:

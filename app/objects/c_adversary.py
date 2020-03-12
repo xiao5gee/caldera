@@ -45,3 +45,6 @@ class Adversary(BaseObject):
             if await self.walk_file_path(os.path.join('plugins', plugin, 'data', ''), '%s.yml' % self.adversary_id):
                 return plugin
         return None
+
+    def add_ability(self, phase, ability):
+        self.phases[phase].append(ability)

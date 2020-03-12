@@ -27,6 +27,7 @@ class BasePlanningService(BaseService):
         :param agent:
         :return: trimmed list of links
         """
+        links[:] = [lnk for lnk in links if lnk.command]
         links[:] = await self.add_test_variants(links, agent, operation)
         links = await self.remove_links_missing_facts(links)
         links = await self.remove_links_missing_requirements(links, operation)
