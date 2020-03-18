@@ -1,4 +1,5 @@
 tox
 pytest
+pytest-asyncio
 coverage
 pre-commit
